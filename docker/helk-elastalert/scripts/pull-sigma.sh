@@ -20,6 +20,13 @@ HELK_WARNING_TAG="${WAR}[HELK-ELASTALERT-DOCKER-INSTALLATION-WARNING]${STD}"
 CONFIG_FILE="${ESALERT_HOME}/pull-sigma-config.yaml"
 HELK_ERROR_FILE="/tmp/helk_error"
 
+# ******* Check if $ADVERTISED_LISTENER env variable is set************
+if [[ -z "$ADVERTISED_LISTENER" ]]; then
+  echo "${HELK_ERROR_TAG}ADVERTISED_LISTENER must be set when running pull-sigma.sh.."
+  exit 1
+fi
+echo "${HELK_INFO_TAG}ADVERTISED_LISTENER value is $ADVERTISED_LISTENER"
+
 # Additional Settings
 helk_sigmac="${ESALERT_SIGMA_HOME}/sigmac-config.yml"
 
@@ -236,5 +243,21 @@ for er in ${ESALERT_HOME}/rules/*; do
 done
 echo "---------------------------------------------------------"
 echo -e "${HELK_INFO_TAG} [+++] Finished splitting $rule_counter Elastalert rules"
+echo "---------------------------------------------------------"
+echo " "
+
+# ******** Adding POST alert to converted rules ***********
+rule_counter=0
+echo -e "${HELK_INFO_TAG}Adding POST alert to Elastalert rule files.."
+echo "------------------------------------------------------------------"
+for er in ${ESALERT_HOME}/rules/*; do
+    echo "[++++++] Adding POST alert to file $er .."
+    printf "\n" >> $er
+    cat ${ESALERT_HOME}/post_alert.yml >> $er
+    printf "\nhttp_post_url: 'http://$ADVERTISED_LISTENER:1234'" >> $er
+    rule_counter=$[$rule_counter +1]
+done
+echo "---------------------------------------------------------"
+echo -e "${HELK_INFO_TAG} [+++] Finished adding POST alert to $rule_counter Elastalert rules"
 echo "---------------------------------------------------------"
 echo " "
