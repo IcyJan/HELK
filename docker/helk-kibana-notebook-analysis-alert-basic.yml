@@ -32,6 +32,8 @@ services:
         soft: 160000
         hard: 160000
     restart: always
+    ports:
+      - "9200:9200"
     networks:
       helk:
   helk-logstash:
@@ -248,7 +250,8 @@ services:
     networks:
       helk:
   helk-elastalert:
-    image: otrf/helk-elastalert:latest
+    build: helk-elastalert
+    image: helk-elastalert:dev
     container_name: helk-elastalert
     logging:
       driver: "json-file"
@@ -261,6 +264,7 @@ services:
     environment:
       ES_HOST: helk-elasticsearch
       ES_PORT: 9200
+      ADVERTISED_LISTENER: ${ADVERTISED_LISTENER}
     networks:
       helk:
 
