@@ -47,8 +47,12 @@ until [[ "$(curl -s -o /dev/null -w "%{http_code}" $ELASTICSEARCH_ACCESS)" == "2
 done
 
 # *********** Transform SIGMA Rules to Elastalert Signatures *************
-echo "$HELK_ELASTALERT_INFO_TAG Executing pull-sigma.sh script.."
-/etc/elastalert/pull-sigma.sh
+FIRST_START_FILE=${ESALERT_HOME}/first_start  #only convert rules on first startup
+if [ ! -f "$FIRST_START_FILE" ]; then
+    touch $FIRST_START_FILE
+    echo "$HELK_ELASTALERT_INFO_TAG Executing pull-sigma.sh script.."
+    /etc/elastalert/pull-sigma.sh
+fi
 
 # *********** Creating Elastalert Status Index ***************
 response_code=$(curl -s -o /dev/null -w "%{http_code}" $ELASTICSEARCH_ACCESS/elastalert_status)
