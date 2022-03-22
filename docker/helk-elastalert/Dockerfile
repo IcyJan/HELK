@@ -62,4 +62,4 @@ USER elastalertuser
 # *********** RUN Elastalert ***************
 WORKDIR ${ESALERT_HOME}
 ENTRYPOINT ["./elastalert-entrypoint.sh"]
-CMD ["/bin/bash","-c","elastalert","--verbose"]
+CMD ["/bin/bash","-c","elastalert","--verbose","--start", "2014-01-01T12:00:00"]
