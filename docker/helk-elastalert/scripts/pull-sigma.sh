@@ -264,11 +264,11 @@ echo " "
 
 # ******** Fixing C:\ win-paths in converted rules ***********
 rule_counter=0
-echo -e "${HELK_INFO_TAG}Fixing C:\ win-paths in rule files.."
+echo -e "${HELK_INFO_TAG}Fixing win-paths in rule files.."
 echo "------------------------------------------------------------------"
 for er in ${ESALERT_HOME}/rules/*; do
-    echo "[++++++] Adding POST alert to file $er .."
-    sed -i 's/"c\\:\\\\/"C:\\\\/gI' $er
+    echo "[++++++] Fixing win-paths in file $er .."
+    #sed -i 's/"c\\:\\\\/"C:\\\\/gI' $er
     rule_counter=$[$rule_counter +1]
 done
 echo "---------------------------------------------------------"
